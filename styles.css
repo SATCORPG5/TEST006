@@ -1,0 +1,312 @@
+/* --------------------------------------------------------------
+   SATCORP – Futuristic, responsive & elegant UI
+   -------------------------------------------------------------- */
+
+/* ---------- CSS VARIABLES (light & dark) ---------- */
+:root {
+  --font-primary: 'Inter', system-ui, sans-serif;
+  --font-heading: 'Orbitron', sans-serif;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --bg-primary: #0e0e0e;
+  --bg-card: rgba(255, 255, 255, 0.02);
+  --accent-color: #00fbff; /* neon cyan */
+  --accent-hover: #00c2d1;
+  --border-radius: 8px;
+  --transition-duration: 0.3s;
+}
+
+/* Dark mode swaps */
+body.dark-mode {
+  --text-primary: #ffffff;
+  --text-secondary: #c0c0c0;
+  --bg-primary: #121212;
+  --bg-card: rgba(255, 255, 255, 0.04);
+}
+
+/* ---------- GLOBAL RESET ---------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ---------- BODY ---------- */
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  overflow-x: hidden;
+}
+
+/* ---------- CONTAINER ---------- */
+.container {
+  width: min(92%, 1200px);
+  margin-inline: auto;
+  padding-block: 2rem;
+}
+
+/* ---------- TYPOGRAPHY ---------- */
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  color: var(--accent-color);
+}
+h1 {
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  line-height: 1.1;
+}
+h2 {
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  margin-bottom: 1rem;
+}
+p, li, a {
+  color: var(--text-primary);
+}
+a {
+  text-decoration: none;
+  transition: color var(--transition-duration);
+}
+a:hover {
+  color: var(--accent-color);
+}
+
+/* ---------- HEADER & NAV ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: 1.25rem;
+  color: var(--accent-color);
+}
+.logo svg {
+  width: 32px;
+  height: 32px;
+}
+.main-nav ul {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+.main-nav a {
+  font-weight: 600;
+  letter-spacing: .5px;
+}
+
+/* Theme toggle button */
+#theme-toggle {
+  background: none;
+  border: none;
+  color: var(--accent-color);
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+#theme-toggle:focus-visible {
+  outline: 2px solid var(--accent-color);
+}
+
+/* ---------- HERO SECTION ---------- */
+.hero {
+  position: relative;
+  height: 100vh;
+  color: var(--accent-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+.hero::before {
+  /* fallback gradient if JS fails */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #0e0e0e, #001d1d);
+  opacity: .85;
+  z-index: -2;
+}
+.hero-inner {
+  max-width: 800px;
+  padding: 2rem;
+}
+.hero h1 {
+  margin-bottom: .5rem;
+}
+.hero .tagline {
+  font-size: 1.5rem;
+  margin-bottom: .5rem;
+  color: var(--text-secondary);
+}
+.hero .quote {
+  font-style: italic;
+  margin-bottom: 2rem;
+  opacity: .85;
+}
+.cta-btn {
+  display: inline-block;
+  padding: .85rem 2rem;
+  background: var(--accent-color);
+  color: var(--bg-primary);
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  transition: background var(--transition-duration);
+}
+.cta-btn:hover {
+  background: var(--accent-hover);
+}
+
+/* ---------- SECTION ---------- */
+.section {
+  padding: 4rem 0;
+}
+.section:nth-of-type(even) {
+  background: var(--bg-card);
+}
+.section h2 {
+  text-align: center;
+}
+
+/* ---------- LISTS (multi‑column) ---------- */
+.list-columns {
+  column-count: 2;
+  column-gap: 2rem;
+  list-style: disc inside;
+  padding-left: .5rem;
+}
+@media (max-width: 768px) {
+  .list-columns {
+    column-count: 1;
+  }
+}
+
+/* ---------- ACCORDION (details/summary) ---------- */
+.accordion details {
+  margin-bottom: 1.25rem;
+  background: var(--bg-card);
+  border-radius: var(--border-radius);
+  padding: .75rem 1rem;
+}
+.accordion summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--accent-color);
+  outline: none;
+}
+.accordion summary::-webkit-details-marker {
+  display: none;
+}
+.accordion details[open] > summary::after {
+  content: "–";
+  float: right;
+}
+.accordion summary::after {
+  content: "+";
+  float: right;
+}
+
+/* ---------- PROCESS STEPS ---------- */
+.process-steps {
+  counter-reset: step;
+  list-style: none;
+  padding-left: 0;
+}
+.process-steps li {
+  position: relative;
+  padding-left: 3rem;
+  margin-bottom: 1rem;
+}
+.process-steps li::before {
+  counter-increment: step;
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2rem;
+  height: 2rem;
+  background: var(--accent-color);
+  color: var(--bg-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+/* ---------- FOOTER ----------
+   Includes social icons and small‑print.
+*/
+.footer-section {
+  text-align: center;
+  background: var(--bg-primary);
+}
+.social-links {
+  margin: 1.5rem 0;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+.social-links a {
+  color: var(--accent-color);
+  font-size: 1.5rem;
+  transition: transform var(--transition-duration);
+}
+.social-links a:hover {
+  transform: scale(1.2);
+}
+.footer-note {
+  font-size: .85rem;
+  opacity: .7;
+  margin-top: 2rem;
+}
+
+/* ---------- CUSTOM CURSOR ----------
+   Small neon circle that follows the mouse.
+*/
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: var(--accent-color);
+  mix-blend-mode: difference;
+  transform: translate(-50%, -50%);
+  transition: width .2s, height .2s, background .2s;
+  z-index: 9999;
+}
+body:hover .custom-cursor {
+  width: 30px;
+  height: 30px;
+}
+
+/* ---------- RESPONSIVE BREAKPOINTS */
+@media (max-width: 600px) {
+  .main-nav ul {
+    gap: 1rem;
+  }
+  .cta-btn {
+    padding: .65rem 1.5rem;
+  }
+}
+
+/* --------------------------------------------------------------
+   END OF STYLES
+   -------------------------------------------------------------- */
