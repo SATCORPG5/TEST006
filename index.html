@@ -1,13 +1,587 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SYSTEM INTERFACE</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #0a0a1a;
+            --secondary-bg: #1a1a2a;
+            --accent-main: #00ffff;
+            --accent-secondary: #8A2BE2;
+            --accent-tertiary: #FFD700;
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-dim: rgba(255, 255, 255, 0.4);
+            --panel-bg: rgba(255, 255, 255, 0.05);
+            --panel-border: rgba(0, 255, 255, 0.2);
+            --transition-slow: 0.8s ease;
+            --transition-med: 0.4s ease;
+            --transition-fast: 0.2s ease;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            font-weight: 300;
+            line-height: 1.6;
+            height: 100vh;
+            cursor: none;
+        }
+
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-main);
+            mix-blend-mode: difference;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s;
+        }
+
+        .cursor-trail {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-secondary);
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0;
+        }
+
+        #core-container {
+            position: relative;
+            height: 100vh;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        .chamber {
+            height: 100vh;
+            scroll-snap-align: start;
+            position: relative;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity var(--transition-slow);
+        }
+
+        .chamber.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* System Markers Navigation */
+        .system-markers {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+
+        .marker {
+            color: var(--text-dim);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all var(--transition-med);
+            position: relative;
+        }
+
+        .marker:after {
+            content: '';
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 5px;
+            background: var(--accent-main);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity var(--transition-med);
+        }
+
+        .marker.active {
+            color: var(--accent-main);
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .marker.active:after {
+            opacity: 1;
+            animation: markerPulse 2s infinite;
+        }
+
+        @keyframes markerPulse {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.5); }
+        }
+
+        /* Entry Chamber */
+        #entry {
+            flex-direction: column;
+            background: radial-gradient(ellipse at center, var(--primary-bg) 0%, #000000 70%);
+            overflow: hidden;
+        }
+
+        .particle-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .core-element {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            z-index: 10;
+        }
+
+        .neural-lattice {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at center, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+            border: 1px solid var(--panel-border);
+            border-radius: 50%;
+            animation: pulse 8s infinite ease-in-out;
+            box-shadow: 0 0 80px rgba(0, 255, 255, 0.3);
+        }
+
+        .quantum-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            border-radius: 50%;
+            animation: rotate 20s linear infinite;
+        }
+
+        .quantum-ring:before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 110%;
+            height: 110%;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 50%;
+            animation: rotate 15s linear infinite reverse;
+        }
+
+        .particle-field {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .chamber-text {
+            text-align: center;
+            margin-top: 3rem;
+            z-index: 10;
+        }
+
+        .system-headline {
+            font-size: 3rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px var(--accent-main);
+            background: linear-gradient(90deg, var(--accent-main), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: headlineGlow 3s infinite alternate;
+        }
+
+        @keyframes headlineGlow {
+            0% { text-shadow: 0 0 10px var(--accent-main); }
+            100% { text-shadow: 0 0 30px var(--accent-secondary); }
+        }
+
+        .system-descriptor {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .scroll-prompt {
+            position: absolute;
+            bottom: 2rem;
+            z-index: 10;
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--accent-main), transparent);
+            animation: scroll-pulse 2s infinite;
+        }
+
+        /* Identity Core */
+        #identity {
+            background: linear-gradient(45deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+        }
+
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--panel-border);
+            padding: 3rem;
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-panel:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.03), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 10s infinite linear;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .data-pair {
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .data-label {
+            color: var(--accent-main);
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            min-width: 120px;
+            display: inline-block;
+        }
+
+        .data-value {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            letter-spacing: 0.1em;
+            margin-left: 2rem;
+        }
+
+        /* Capabilities Matrix */
+        #capabilities {
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+        }
+
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .capability-module {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+        }
+
+        .module-outline {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 1px solid var(--panel-border);
+            transition: all var(--transition-med);
+            transform-style: preserve-3d;
+        }
+
+        .capability-module:hover .module-outline {
+            border-color: var(--accent-main);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+            transform: rotateY(10deg) rotateX(10deg);
+        }
+
+        .module-label {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .module-panel {
+            position: absolute;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            transition: right var(--transition-slow);
+            padding: 2rem;
+            color: white;
+            border-left: 1px solid var(--panel-border);
+        }
+
+        /* Process Flow */
+        #process {
+            background: linear-gradient(45deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+        }
+
+        .circuit-flow {
+            position: relative;
+            width: 80%;
+            height: 200px;
+        }
+
+        .flow-node {
+            position: absolute;
+            padding: 1rem 2rem;
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid var(--panel-border);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            transition: all var(--transition-med);
+            cursor: default;
+        }
+
+        .flow-node[data-step="1"] { left: 0; top: 50%; transform: translateY(-50%); }
+        .flow-node[data-step="2"] { left: 30%; top: 20%; }
+        .flow-node[data-step="3"] { left: 60%; top: 80%; }
+        .flow-node[data-step="4"] { right: 0; top: 50%; transform: translateY(-50%); }
+
+        .flow-node.active {
+            background: rgba(0, 255, 255, 0.2);
+            color: var(--accent-main);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .flow-path {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Active Systems */
+        #systems {
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+        }
+
+        .system-logs {
+            width: 600px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--panel-border);
+            padding: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            display: flex;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 2px solid var(--panel-border);
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.5s ease;
+        }
+
+        .log-entry.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .log-time {
+            color: var(--accent-main);
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            min-width: 100px;
+        }
+
+        .log-message {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-left: 1rem;
+        }
+
+        /* Contact Terminal */
+        #contact {
+            background: linear-gradient(45deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+        }
+
+        .terminal-interface {
+            width: 500px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--panel-border);
+            padding: 2rem;
+        }
+
+        .input-field {
+            margin: 2rem 0;
+        }
+
+        .input-field label {
+            display: block;
+            color: var(--accent-main);
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .system-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--panel-border);
+            padding: 1rem;
+            color: white;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: all var(--transition-med);
+        }
+
+        .system-input:focus {
+            outline: none;
+            border-color: var(--accent-main);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+        }
+
+        .transmit-button {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid var(--panel-border);
+            color: var(--accent-main);
+            padding: 1rem 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all var(--transition-med);
+            width: 100%;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .transmit-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+            transition: left var(--transition-slow);
+        }
+
+        .transmit-button:hover:before {
+            left: 100%;
+        }
+
+        .transmit-button:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        @keyframes rotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes scroll-pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Particle System */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .system-markers {
+                display: none;
+            }
+            
+            .system-headline {
+                font-size: 1.5rem;
+            }
+            
+            .core-element {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .matrix-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .capability-module {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .system-logs {
+                width: 90%;
+            }
+            
+            .terminal-interface {
+                width: 90%;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="custom-cursor"></div>
     <div id="core-container">
         <!-- Navigation Markers -->
         <nav class="system-markers">
@@ -21,9 +595,11 @@
 
         <!-- Entry Chamber -->
         <section id="entry" class="chamber active">
+            <div class="particle-bg" id="particle-bg"></div>
             <div class="core-element">
+                <div class="quantum-ring"></div>
                 <div class="neural-lattice"></div>
-                <div class="particle-field"></div>
+                <div class="particle-field" id="particle-field"></div>
             </div>
             <div class="chamber-text">
                 <h1 class="system-headline">CONSCIOUS SYSTEM</h1>
@@ -47,7 +623,11 @@
                 </div>
                 <div class="data-pair">
                     <span class="data-label">STATUS</span>
-                    <span class="data-value">Operational</span>
+                    <span class="data-value">Operational | Adaptive Learning Active</span>
+                </div>
+                <div class="data-pair">
+                    <span class="data-label">VERSION</span>
+                    <span class="data-value">Nexus 7.2.1</span>
                 </div>
             </div>
         </section>
@@ -105,6 +685,14 @@
                     <span class="log-time">23.41.27</span>
                     <span class="log-message">Processing matrix active</span>
                 </div>
+                <div class="log-entry">
+                    <span class="log-time">23.41.35</span>
+                    <span class="log-message">Quantum coherence established</span>
+                </div>
+                <div class="log-entry">
+                    <span class="log-time">23.41.48</span>
+                    <span class="log-message">Ready for interaction protocol</span>
+                </div>
             </div>
         </section>
 
@@ -114,11 +702,11 @@
                 <div class="transmission-line">
                     <div class="input-field">
                         <label>INITIATE COMMUNICATION</label>
-                        <input type="text" class="system-input">
+                        <input type="text" class="system-input" placeholder="Identity protocol">
                     </div>
                     <div class="input-field">
                         <label>MESSAGE CONTEXT</label>
-                        <textarea class="system-input"></textarea>
+                        <textarea class="system-input" placeholder="Transmission content" rows="4"></textarea>
                     </div>
                     <button class="transmit-button">SEND TRANSMISSION</button>
                 </div>
@@ -126,6 +714,482 @@
         </section>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        class AdvancedConsciousInterface {
+            constructor() {
+                this.currentSection = 0;
+                this.sections = document.querySelectorAll('.chamber');
+                this.markers = document.querySelectorAll('.marker');
+                this.isAnimating = false;
+                this.particles = [];
+                this.trails = [];
+                this.init();
+            }
+
+            init() {
+                this.setupCustomCursor();
+                this.setupScrollNavigation();
+                this.setupMarkerNavigation();
+                this.setupCoreInteractions();
+                this.setupModuleInteractions();
+                this.setupTerminal();
+                this.createParticleSystem();
+                this.animateEntryChamber();
+                
+                // Initial animation
+                setTimeout(() => {
+                    document.body.style.opacity = '1';
+                }, 500);
+            }
+
+            setupCustomCursor() {
+                const cursor = document.querySelector('.custom-cursor');
+                
+                document.addEventListener('mousemove', (e) => {
+                    cursor.style.left = e.clientX - 10 + 'px';
+                    cursor.style.top = e.clientY - 10 + 'px';
+                    
+                    // Create cursor trail
+                    this.createCursorTrail(e.clientX, e.clientY);
+                });
+                
+                document.addEventListener('mousedown', () => {
+                    cursor.style.transform = 'scale(0.7)';
+                });
+                
+                document.addEventListener('mouseup', () => {
+                    cursor.style.transform = 'scale(1)';
+                });
+            }
+
+            createCursorTrail(x, y) {
+                const trail = document.createElement('div');
+                trail.classList.add('cursor-trail');
+                trail.style.left = x - 3 + 'px';
+                trail.style.top = y - 3 + 'px';
+                document.body.appendChild(trail);
+                
+                // Animate trail
+                setTimeout(() => {
+                    trail.style.opacity = '0.7';
+                    trail.style.transform = 'scale(1.5)';
+                }, 10);
+                
+                setTimeout(() => {
+                    trail.style.opacity = '0';
+                    trail.style.transform = 'scale(2)';
+                    setTimeout(() => {
+                        document.body.removeChild(trail);
+                    }, 300);
+                }, 500);
+            }
+
+            setupScrollNavigation() {
+                let isScrolling = false;
+                
+                document.getElementById('core-container').addEventListener('wheel', (e) => {
+                    if (isScrolling || this.isAnimating) return;
+                    
+                    isScrolling = true;
+                    const direction = e.deltaY > 0 ? 1 : -1;
+                    this.navigateToSection(this.currentSection + direction);
+                    
+                    setTimeout(() => {
+                        isScrolling = false;
+                    }, 1000);
+                });
+
+                // Keyboard navigation
+                window.addEventListener('keydown', (e) => {
+                    if (this.isAnimating) return;
+                    
+                    if (e.key === 'ArrowDown' || e.key === ' ') {
+                        e.preventDefault();
+                        this.navigateToSection(this.currentSection + 1);
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        this.navigateToSection(this.currentSection - 1);
+                    }
+                });
+            }
+
+            setupMarkerNavigation() {
+                this.markers.forEach((marker, index) => {
+                    marker.addEventListener('click', () => {
+                        if (!this.isAnimating) {
+                            this.navigateToSection(index);
+                        }
+                    });
+                });
+            }
+
+            setupCoreInteractions() {
+                const core = document.querySelector('.core-element');
+                if (!core) return;
+                
+                core.addEventListener('mousemove', (e) => {
+                    const rect = core.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    
+                    const rotateX = (e.clientY - centerY) / 20;
+                    const rotateY = (centerX - e.clientX) / 20;
+                    
+                    core.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
+                
+                core.addEventListener('mouseleave', () => {
+                    core.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+                });
+            }
+
+            setupModuleInteractions() {
+                const modules = document.querySelectorAll('.capability-module');
+                const panel = document.querySelector('.module-panel');
+                
+                modules.forEach(module => {
+                    module.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const moduleId = module.dataset.module;
+                        this.openModulePanel(moduleId);
+                    });
+                    
+                    module.addEventListener('mouseenter', () => {
+                        module.querySelector('.module-outline').style.borderColor = 'var(--accent-main)';
+                        module.querySelector('.module-outline').style.boxShadow = '0 0 30px rgba(0, 255, 255, 0.3)';
+                    });
+                    
+                    module.addEventListener('mouseleave', () => {
+                        module.querySelector('.module-outline').style.borderColor = 'var(--panel-border)';
+                        module.querySelector('.module-outline').style.boxShadow = 'none';
+                    });
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.capability-module') && !e.target.closest('.module-panel')) {
+                        this.closeModulePanel();
+                    }
+                });
+            }
+
+            setupTerminal() {
+                const button = document.querySelector('.transmit-button');
+                if (button) {
+                    button.addEventListener('click', () => {
+                        button.textContent = 'TRANSMISSION SENT';
+                        button.style.background = 'rgba(0, 255, 255, 0.2)';
+                        button.disabled = true;
+                        
+                        // Create transmission effect
+                        this.createTransmissionEffect();
+                        
+                        setTimeout(() => {
+                            button.textContent = 'SEND TRANSMISSION';
+                            button.style.background = 'rgba(0, 255, 255, 0.1)';
+                            button.disabled = false;
+                        }, 3000);
+                    });
+                }
+            }
+
+            createTransmissionEffect() {
+                const terminal = document.querySelector('.terminal-interface');
+                const pulse = document.createElement('div');
+                pulse.style.position = 'absolute';
+                pulse.style.top = '0';
+                pulse.style.left = '0';
+                pulse.style.width = '100%';
+                pulse.style.height = '100%';
+                pulse.style.background = 'radial-gradient(circle, rgba(0,255,255,0.3) 0%, transparent 70%)';
+                pulse.style.opacity = '0';
+                pulse.style.transition = 'opacity 0.5s ease';
+                terminal.style.position = 'relative';
+                terminal.appendChild(pulse);
+                
+                setTimeout(() => {
+                    pulse.style.opacity = '1';
+                }, 10);
+                
+                setTimeout(() => {
+                    pulse.style.opacity = '0';
+                    setTimeout(() => {
+                        terminal.removeChild(pulse);
+                    }, 500);
+                }, 500);
+            }
+
+            navigateToSection(index) {
+                if (index < 0 || index >= this.sections.length || this.isAnimating) return;
+                
+                this.isAnimating = true;
+                this.currentSection = index;
+                
+                // Update active sections
+                this.sections.forEach((section, i) => {
+                    section.classList.toggle('active', i === index);
+                });
+                
+                // Update markers
+                this.markers.forEach((marker, i) => {
+                    marker.classList.toggle('active', i === index);
+                });
+
+                // Trigger section-specific animations
+                this.animateSectionEntry(index);
+                
+                setTimeout(() => {
+                    this.isAnimating = false;
+                }, 800);
+            }
+
+            animateSectionEntry(index) {
+                switch(index) {
+                    case 0: // Entry
+                        this.animateEntryChamber();
+                        break;
+                    case 1: // Identity
+                        this.animateDataPairs();
+                        break;
+                    case 2: // Capabilities
+                        this.animateMatrixGrid();
+                        break;
+                    case 3: // Process Flow
+                        this.animateFlowNodes();
+                        break;
+                    case 4: // Active Systems
+                        this.animateSystemLogs();
+                        break;
+                }
+            }
+
+            animateEntryChamber() {
+                const entry = document.getElementById('entry');
+                if (entry.classList.contains('active')) {
+                    setTimeout(() => {
+                        entry.querySelector('.neural-lattice').style.animation = 'pulse 8s infinite ease-in-out';
+                    }, 500);
+                }
+            }
+
+            animateDataPairs() {
+                const pairs = document.querySelectorAll('#identity .data-pair');
+                pairs.forEach((pair, i) => {
+                    pair.style.opacity = '0';
+                    pair.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        pair.style.transition = 'all 0.6s ease';
+                        pair.style.opacity = '1';
+                        pair.style.transform = 'translateY(0)';
+                    }, i * 200);
+                });
+            }
+
+            animateMatrixGrid() {
+                const modules = document.querySelectorAll('#capabilities .capability-module');
+                modules.forEach((module, i) => {
+                    module.style.opacity = '0';
+                    module.style.transform = 'scale(0.8) rotateY(180deg)';
+                    
+                    setTimeout(() => {
+                        module.style.transition = 'all 0.5s ease';
+                        module.style.opacity = '1';
+                        module.style.transform = 'scale(1) rotateY(0deg)';
+                    }, i * 150);
+                });
+            }
+
+            animateFlowNodes() {
+                const nodes = document.querySelectorAll('#process .flow-node');
+                nodes.forEach((node, i) => {
+                    node.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        node.style.transition = 'all 0.5s ease';
+                        node.style.opacity = '1';
+                    }, i * 300);
+                });
+                
+                // Animate sequence
+                let step = 0;
+                const interval = setInterval(() => {
+                    nodes.forEach(node => node.classList.remove('active'));
+                    if (nodes[step]) {
+                        nodes[step].classList.add('active');
+                        step = (step + 1) % nodes.length;
+                    }
+                }, 1500);
+                
+                // Store interval ID to clear later if needed
+                this.flowInterval = interval;
+            }
+
+            animateSystemLogs() {
+                const logs = document.querySelectorAll('#systems .log-entry');
+                logs.forEach((log, i) => {
+                    setTimeout(() => {
+                        log.classList.add('visible');
+                    }, i * 300);
+                });
+            }
+
+            createParticleSystem() {
+                const particleBg = document.getElementById('particle-bg');
+                const particleField = document.querySelector('.particle-field');
+                
+                // Create background particles
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    // Random properties
+                    const size = Math.random() * 3 + 1;
+                    const x = Math.random() * 100;
+                    const y = Math.random() * 100;
+                    const duration = Math.random() * 20 + 10;
+                    const delay = Math.random() * 5;
+                    
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.left = `${x}%`;
+                    particle.style.top = `${y}%`;
+                    particle.style.background = `rgba(${Math.random() > 0.5 ? '0, 255, 255' : '138, 43, 226'}, ${Math.random() * 0.5 + 0.2})`;
+                    particle.style.animation = `float ${duration}s linear ${delay}s infinite`;
+                    
+                    particleBg.appendChild(particle);
+                }
+                
+                // Create interactive particles for the core
+                for (let i = 0; i < 30; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    const size = Math.random() * 2 + 1;
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = Math.random() * 150 + 50;
+                    
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.background = `rgba(255, 215, 0, ${Math.random() * 0.5 + 0.3})`;
+                    
+                    particleField.appendChild(particle);
+                    
+                    this.particles.push({
+                        element: particle,
+                        angle: angle,
+                        distance: distance,
+                        speed: Math.random() * 0.02 + 0.01
+                    });
+                }
+                
+                // Animate particles
+                this.animateParticles();
+            }
+
+            animateParticles() {
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+                
+                this.particles.forEach(particle => {
+                    particle.angle += particle.speed;
+                    
+                    const x = centerX + Math.cos(particle.angle) * particle.distance;
+                    const y = centerY + Math.sin(particle.angle) * particle.distance;
+                    
+                    particle.element.style.left = `${x}px`;
+                    particle.element.style.top = `${y}px`;
+                });
+                
+                requestAnimationFrame(() => this.animateParticles());
+            }
+
+            openModulePanel(moduleId) {
+                const panel = document.querySelector('.module-panel');
+                const content = panel.querySelector('.panel-content');
+                
+                // Add module-specific content
+                content.innerHTML = this.getModuleContent(moduleId);
+                panel.style.right = '0';
+            }
+
+            closeModulePanel() {
+                const panel = document.querySelector('.module-panel');
+                if (panel) {
+                    panel.style.right = '-400px';
+                }
+            }
+
+            getModuleContent(moduleId) {
+                const content = {
+                    '1': `
+                        <h3>ANALYTICAL PROCESSING</h3>
+                        <p>Advanced data interpretation and pattern analysis systems. Real-time processing capabilities with quantum-enhanced algorithms.</p>
+                        <div class="data-pair">
+                            <span class="data-label">CAPACITY</span>
+                            <span class="data-value">Exabytes/second</span>
+                        </div>
+                        <div class="data-pair">
+                            <span class="data-label">PRECISION</span>
+                            <span class="data-value">99.97% accuracy</span>
+                        </div>
+                    `,
+                    '2': `
+                        <h3>PATTERN RECOGNITION</h3>
+                        <p>Neural network-based pattern detection across multi-dimensional datasets. Adaptive recognition protocols for evolving data structures.</p>
+                        <div class="data-pair">
+                            <span class="data-label">DIMENSIONS</span>
+                            <span class="data-value">Up to 12 simultaneous</span>
+                        </div>
+                        <div class="data-pair">
+                            <span class="data-label">ADAPTATION</span>
+                            <span class="data-value">Real-time learning</span>
+                        </div>
+                    `,
+                    '3': `
+                        <h3>DECISION MATRICES</h3>
+                        <p>Multi-factor decision making systems with probabilistic outcome modeling. Real-time scenario simulation and optimization protocols.</p>
+                        <div class="data-pair">
+                            <span class="data-label">VARIABLES</span>
+                            <span class="data-value">Unlimited simultaneous</span>
+                        </div>
+                        <div class="data-pair">
+                            <span class="data-label">EFFICIENCY</span>
+                            <span class="data-value">Nanosecond resolution</span>
+                        </div>
+                    `,
+                    '4': `
+                        <h3>ADAPTIVE LEARNING</h3>
+                        <p>Continuous improvement through experience-based optimization. Self-modifying algorithmic structures for enhanced performance.</p>
+                        <div class="data-pair">
+                            <span class="data-label">RATE</span>
+                            <span class="data-value">Exponential progression</span>
+                        </div>
+                        <div class="data-pair">
+                            <span class="data-label">APPLICATION</span>
+                            <span class="data-value">Universal domain adaptation</span>
+                        </div>
+                    `
+                };
+                return content[moduleId] || '<p>Module data not available</p>';
+            }
+        }
+
+        // Initialize the interface when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.interface = new AdvancedConsciousInterface();
+        });
+
+        // Add CSS animation for floating particles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+                10% { opacity: 1; }
+                90% { opacity: 1; }
+                100% { transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(360deg); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
