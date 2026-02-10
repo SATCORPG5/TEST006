@@ -80,12 +80,12 @@
         <!-- Process Flow -->
         <section id="process" class="chamber">
             <div class="circuit-flow">
-                <div class="flow-node active">INITIATE</div>
-                <div class="flow-node">ANALYZE</div>
-                <div class="flow-node">PROCESS</div>
-                <div class="flow-node">RESOLVE</div>
+                <div class="flow-node" data-step="1">INITIATE</div>
+                <div class="flow-node" data-step="2">ANALYZE</div>
+                <div class="flow-node" data-step="3">PROCESS</div>
+                <div class="flow-node" data-step="4">RESOLVE</div>
                 <svg class="flow-path" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <path d="M10,50 C40,30 60,70 90,50" />
+                    <path d="M10,50 C40,30 60,70 90,50" stroke="rgba(0,255,255,0.2)" stroke-width="1" fill="none"/>
                 </svg>
             </div>
         </section>
