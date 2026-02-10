@@ -3,772 +3,637 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conscious System Interface</title>
+    <title>SATCORP — Systems Operator</title>
     <style>
-        /* Base Styles & Variables */
-        :root {
-            --primary-dark: #0a0c17;
-            --interface-dark: #121527;
-            --accent-cyan: #00f0ff;
-            --accent-violet: #8b5cf6;
-            --signal-gold: #ffd166;
-            --text-white: rgba(255, 255, 255, 0.92);
-            --glass: rgba(255, 255, 255, 0.05);
-            
-            --header-font: 'Rajdhani', sans-serif;
-            --body-font: 'Inter', sans-serif;
-            
-            --spacing-xs: 0.5rem;
-            --spacing-sm: 1rem;
-            --spacing-md: 2rem;
-            --spacing-lg: 4rem;
-            --spacing-xl: 8rem;
-        }
-        
+        /* Base styles and reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', 'SF Pro Display', -apple-system, sans-serif;
         }
         
         body {
-            background-color: var(--primary-dark);
-            color: var(--text-white);
-            font-family: var(--body-font);
+            background: #050510;
+            color: #e0e0ff;
             overflow-x: hidden;
             line-height: 1.6;
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
-            font-family: var(--header-font);
-            font-weight: 600;
             letter-spacing: 0.05em;
-            text-transform: uppercase;
+            height: 100vh;
+            overflow: hidden;
         }
         
-        /* Typography Scale */
-        .huge-text {
-            font-size: clamp(2.5rem, 5vw, 4.5rem);
-            line-height: 1.1;
+        /* Color variables */
+        :root {
+            --void: #050510;
+            --indigo: #13132e;
+            --cyan: #00f0ff;
+            --violet: #6c63ff;
+            --gold: #ffd700;
+            --text: #e0e0ff;
         }
         
-        .large-text {
-            font-size: clamp(1.5rem, 3vw, 2.5rem);
-            line-height: 1.2;
+        /* Container for all layers */
+        .interface-container {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            perspective: 1000px;
         }
         
-        .medium-text {
-            font-size: clamp(1.125rem, 2vw, 1.5rem);
+        /* Layer base styles */
+        .layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease-out;
         }
         
-        /* Common UI Elements */
-        .system-node {
-            background: var(--glass);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 4px;
+        .layer.active {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .layer.inactive {
+            display: none;
+            opacity: 0;
+        }
+        
+        /* Core Layer */
+        #core-layer {
+            background: radial-gradient(circle at center, #0a0a1a 0%, #050510 70%);
+            flex-direction: column;
+            z-index: 10;
+        }
+        
+        .core-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .core {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, var(--cyan) 0%, var(--violet) 70%, transparent 100%);
+            box-shadow: 0 0 60px var(--cyan);
             transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
         }
         
-        .glow-effect {
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+        .core:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 80px var(--cyan);
         }
         
-        .hover-pulse:hover {
+        .core-title {
+            position: absolute;
+            bottom: -60px;
+            width: 100%;
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: var(--text);
+        }
+        
+        .core-subtitle {
+            position: absolute;
+            bottom: -100px;
+            width: 100%;
+            text-align: center;
+            font-size: 1rem;
+            color: var(--cyan);
+            opacity: 0.8;
+        }
+        
+        .core-interaction-hint {
+            position: absolute;
+            bottom: 40px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--cyan);
+            opacity: 0.6;
             animation: pulse 2s infinite;
         }
         
         @keyframes pulse {
-            0% { opacity: 1; }
+            0% { opacity: 0.3; }
             50% { opacity: 0.7; }
-            100% { opacity: 1; }
+            100% { opacity: 0.3; }
         }
         
-        /* Section Layout */
-        section {
-            min-height: 100vh;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-            padding: var(--spacing-lg);
+        /* Operator Identity Layer */
+        #identity-layer {
+            background: rgba(5, 5, 16, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 9;
         }
         
-        .section-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-            z-index: 10;
-        }
-        
-        /* Entry Chamber */
-        #entry-chamber {
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-        
-        .central-core {
-            position: relative;
-            width: 300px;
-            height: 300px;
-            margin: var(--spacing-lg) auto;
-        }
-        
-        .core-element {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: radial-gradient(circle at center, rgba(0, 240, 255, 0.2) 0%, rgba(139, 92, 246, 0.1) 70%);
-            position: relative;
-            animation: soft-float 15s ease-in-out infinite;
-            box-shadow: 0 0 60px rgba(0, 240, 255, 0.2),
-                        inset 0 0 60px rgba(139, 92, 246, 0.1);
-        }
-        
-        @keyframes soft-float {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-20px) scale(1.02); }
-        }
-        
-        .node-grid {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background-image: 
-                radial-gradient(circle at center, transparent 65%, rgba(0, 240, 255, 0.05) 100%),
-                repeating-conic-gradient(from 0deg, transparent 0deg 10deg, rgba(0, 240, 255, 0.03) 10deg 20deg);
-            animation: rotate-slow 120s linear infinite;
-        }
-        
-        @keyframes rotate-slow {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Identity Core */
-        #identity-core {
-            justify-content: center;
-        }
-        
-        .identity-statements {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--spacing-md);
-            margin-top: var(--spacing-lg);
-        }
-        
-        .statement-item {
-            padding: var(--spacing-md);
-            border-left: 1px solid rgba(0, 240, 255, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .statement-item:hover {
-            border-left-color: var(--accent-cyan);
-            transform: translateX(10px);
-        }
-        
-        .statement-label {
-            color: var(--accent-cyan);
-            font-size: 0.875rem;
-            letter-spacing: 0.1em;
-            margin-bottom: var(--spacing-xs);
-        }
-        
-        .statement-value {
-            font-size: 1.125rem;
-            font-weight: 300;
-        }
-        
-        /* Capabilities Matrix */
-        #capabilities-matrix {
-            justify-content: center;
-        }
-        
-        .capabilities-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: var(--spacing-md);
-            margin-top: var(--spacing-lg);
-        }
-        
-        .capability-item {
-            padding: var(--spacing-md);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .capability-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.1), transparent);
-            transition: left 0.5s ease;
-        }
-        
-        .capability-item:hover::before {
-            left: 100%;
-        }
-        
-        .capability-item:hover {
-            border-color: var(--accent-cyan);
-            transform: translateY(-5px);
-        }
-        
-        .capability-icon {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto var(--spacing-sm);
-            background: rgba(0, 240, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-        
-        /* Process Flow */
-        #process-flow {
-            justify-content: center;
-        }
-        
-        .flow-container {
-            position: relative;
-            height: 300px;
-            margin-top: var(--spacing-lg);
-        }
-        
-        .flow-path {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
-            transform: translateY(-50%);
-        }
-        
-        .flow-nodes {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            transform: translateY(-50%);
-        }
-        
-        .flow-node {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--primary-dark);
-            border: 2px solid var(--accent-cyan);
-            position: relative;
-            z-index: 10;
-        }
-        
-        .flow-node.active {
-            background: var(--accent-cyan);
-            box-shadow: 0 0 15px var(--accent-cyan);
-        }
-        
-        .flow-labels {
-            position: absolute;
-            top: calc(50% + 40px);
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .flow-label {
-            text-align: center;
-            width: 150px;
-            font-size: 0.875rem;
-            color: rgba(255, 255, 255, 0.7);
-        }
-        
-        .flow-label.active {
-            color: var(--accent-cyan);
-            font-weight: 600;
-        }
-        
-        /* Active Systems */
-        #active-systems {
-            justify-content: center;
-        }
-        
-        .system-logs {
-            margin-top: var(--spacing-lg);
-            max-height: 400px;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .log-entry {
-            padding: var(--spacing-sm);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-family: 'Courier New', monospace;
-            font-size: 0.875rem;
-            color: rgba(255, 255, 255, 0.7);
-            display: flex;
-            align-items: center;
-        }
-        
-        .log-timestamp {
-            color: var(--accent-violet);
-            margin-right: var(--spacing-sm);
-            min-width: 120px;
-        }
-        
-        .log-status {
-            color: var(--signal-gold);
-            margin-right: var(--spacing-sm);
-            min-width: 80px;
-        }
-        
-        /* Contact Terminal */
-        #contact-terminal {
-            justify-content: center;
-        }
-        
-        .terminal-interface {
+        .identity-container {
+            width: 60%;
             max-width: 600px;
-            margin: var(--spacing-lg) auto 0;
+            padding: 40px;
+            background: rgba(19, 19, 46, 0.7);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 4px;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
         }
         
-        .terminal-prompt {
-            color: var(--accent-cyan);
-            margin-bottom: var(--spacing-sm);
-            font-family: 'Courier New', monospace;
-        }
-        
-        .input-field {
-            width: 100%;
-            background: transparent;
-            border: none;
+        .identity-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
             border-bottom: 1px solid rgba(0, 240, 255, 0.3);
-            padding: var(--spacing-sm) 0;
-            color: var(--text-white);
+            padding-bottom: 15px;
+        }
+        
+        .operator-id {
+            font-size: 1.5rem;
+            color: var(--cyan);
+            margin-right: 15px;
+        }
+        
+        .identity-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .identity-item {
+            margin-bottom: 15px;
+        }
+        
+        .identity-label {
+            font-size: 0.8rem;
+            color: var(--cyan);
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+        
+        .identity-value {
             font-size: 1rem;
-            font-family: var(--body-font);
-            outline: none;
-            transition: border-color 0.3s ease;
+            color: var(--text);
         }
         
-        .input-field:focus {
-            border-bottom-color: var(--accent-cyan);
+        /* Operations Network Layer */
+        #network-layer {
+            background: rgba(5, 5, 16, 0.95);
+            z-index: 8;
         }
         
-        .submit-button {
-            background: transparent;
-            border: 1px solid var(--accent-cyan);
-            color: var(--accent-cyan);
-            padding: var(--spacing-sm) var(--spacing-md);
-            margin-top: var(--spacing-md);
-            font-family: var(--header-font);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .submit-button:hover {
-            background: rgba(0, 240, 255, 0.1);
-        }
-        
-        /* Background Elements */
-        .floating-particles {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .network-container {
+            position: relative;
             width: 100%;
             height: 100%;
-            pointer-events: none;
+        }
+        
+        .core-node {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, var(--violet) 0%, transparent 70%);
+            box-shadow: 0 0 40px var(--violet);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+        
+        .satellite-node {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(19, 19, 46, 0.8);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
             z-index: 1;
         }
         
-        .particle {
+        .node-ki-ra {
+            top: 20%;
+            left: 25%;
+            animation: float-organic 6s infinite ease-in-out;
+        }
+        
+        .node-kyrax {
+            top: 20%;
+            right: 25%;
+            animation: float-precise 5s infinite ease-in-out;
+        }
+        
+        .node-pulse {
+            bottom: 30%;
+            left: 15%;
+            animation: pulse-wave 4s infinite ease-in-out;
+        }
+        
+        .node-scopu {
+            bottom: 30%;
+            right: 15%;
+            animation: scanning 7s infinite linear;
+        }
+        
+        .satellite-node:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+        }
+        
+        @keyframes float-organic {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        @keyframes float-precise {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes pulse-wave {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 rgba(0, 240, 255, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(0, 240, 255, 0.8); }
+        }
+        
+        @keyframes scanning {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Capability Matrix Layer */
+        #matrix-layer {
+            background: rgba(5, 5, 16, 0.95);
+            z-index: 7;
+        }
+        
+        .matrix-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 80%;
+            max-width: 900px;
+        }
+        
+        .matrix-cell {
+            background: rgba(19, 19, 46, 0.6);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .matrix-cell:hover {
+            background: rgba(19, 19, 46, 0.9);
+            border-color: var(--cyan);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cell-title {
+            font-size: 1.2rem;
+            color: var(--cyan);
+            margin-bottom: 10px;
+        }
+        
+        .cell-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Process Sequence Layer */
+        #process-layer {
+            background: rgba(5, 5, 16, 0.95);
+            z-index: 6;
+        }
+        
+        .process-container {
+            width: 80%;
+            max-width: 900px;
+            height: 200px;
+            position: relative;
+        }
+        
+        .process-line {
             position: absolute;
-            width: 2px;
+            top: 50%;
+            left: 0;
+            width: 100%;
             height: 2px;
-            background: var(--accent-cyan);
+            background: linear-gradient(to right, transparent, var(--cyan), transparent);
+        }
+        
+        .process-stage {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100px;
+            height: 100px;
+            background: rgba(19, 19, 46, 0.8);
+            border: 1px solid rgba(0, 240, 255, 0.3);
             border-radius: 50%;
-            opacity: 0.3;
-            animation: particle-float 15s infinite linear;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            text-align: center;
+            transition: all 0.3s ease;
         }
         
-        @keyframes particle-float {
-            0% { transform: translateY(0) translateX(0); opacity: 0; }
-            10% { opacity: 0.3; }
-            90% { opacity: 0.3; }
-            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+        .process-stage.active {
+            background: rgba(0, 240, 255, 0.1);
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
         }
         
-        /* Scroll Indicator */
-        .scroll-indicator {
+        .stage-observe { left: 5%; }
+        .stage-model { left: 22%; }
+        .stage-architect { left: 39%; }
+        .stage-construct { left: 56%; }
+        .stage-deploy { left: 73%; }
+        .stage-maintain { left: 90%; }
+        
+        /* Navigation controls */
+        .nav-controls {
             position: fixed;
-            bottom: var(--spacing-md);
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            flex-direction: column;
-            align-items: center;
             z-index: 100;
+        }
+        
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            margin: 0 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-dot.active {
+            background: var(--cyan);
+            transform: scale(1.3);
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            color: var(--cyan);
+            cursor: pointer;
+            font-size: 0.9rem;
             opacity: 0.7;
             transition: opacity 0.3s ease;
+            z-index: 100;
         }
         
-        .scroll-text {
-            font-size: 0.75rem;
-            letter-spacing: 0.1em;
-            margin-bottom: var(--spacing-xs);
-            color: var(--accent-cyan);
-        }
-        
-        .scroll-line {
-            width: 1px;
-            height: 40px;
-            background: linear-gradient(to bottom, var(--accent-cyan), transparent);
-            animation: scroll-pulse 2s infinite;
-        }
-        
-        @keyframes scroll-pulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-        
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            section {
-                padding: var(--spacing-md);
-            }
-            
-            .central-core {
-                width: 200px;
-                height: 200px;
-            }
-            
-            .identity-statements,
-            .capabilities-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .flow-labels {
-                flex-direction: column;
-                align-items: center;
-                top: calc(50% + 80px);
-            }
-            
-            .flow-label {
-                margin-bottom: var(--spacing-sm);
-            }
+        .back-button:hover {
+            opacity: 1;
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Background Particles -->
-    <div class="floating-particles" id="particles-container"></div>
-    
-    <!-- Scroll Indicator -->
-    <div class="scroll-indicator">
-        <div class="scroll-text">SYSTEM ACCESS</div>
-        <div class="scroll-line"></div>
+    <div class="interface-container">
+        <!-- Core Layer -->
+        <div id="core-layer" class="layer active">
+            <div class="core-container">
+                <div class="core" id="core-interaction"></div>
+                <div class="core-title">SATCORP</div>
+                <div class="core-subtitle">Concierge System Architect</div>
+                <div class="core-interaction-hint">Approach the core</div>
+            </div>
+        </div>
+        
+        <!-- Operator Identity Layer -->
+        <div id="identity-layer" class="layer inactive">
+            <div class="identity-container">
+                <div class="identity-header">
+                    <div class="operator-id">Operator: ANU</div>
+                </div>
+                <div class="identity-grid">
+                    <div class="identity-item">
+                        <div class="identity-label">Function</div>
+                        <div class="identity-value">Concierge / Architect / Creative Operator</div>
+                    </div>
+                    <div class="identity-item">
+                        <div class="identity-label">Mode</div>
+                        <div class="identity-value">Adaptive</div>
+                    </div>
+                    <div class="identity-item">
+                        <div class="identity-label">Method</div>
+                        <div class="identity-value">Systems over graphics</div>
+                    </div>
+                    <div class="identity-item">
+                        <div class="identity-label">Philosophy</div>
+                        <div class="identity-value">Precision before aesthetics</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Operations Network Layer -->
+        <div id="network-layer" class="layer inactive">
+            <div class="network-container">
+                <div class="core-node">SATCORP</div>
+                <div class="satellite-node node-ki-ra">Ki-Ra</div>
+                <div class="satellite-node node-kyrax">KYRAX</div>
+                <div class="satellite-node node-pulse">PULSΞ</div>
+                <div class="satellite-node node-scopu">SCOPU</div>
+            </div>
+        </div>
+        
+        <!-- Capability Matrix Layer -->
+        <div id="matrix-layer" class="layer inactive">
+            <div class="matrix-container">
+                <div class="matrix-cell">
+                    <div class="cell-title">Identity Systems</div>
+                    <div class="cell-description">Operator identity construction and deployment</div>
+                </div>
+                <div class="matrix-cell">
+                    <div class="cell-title">Interface Systems</div>
+                    <div class="cell-description">Digital presence and interaction frameworks</div>
+                </div>
+                <div class="matrix-cell">
+                    <div class="cell-title">Operational Systems</div>
+                    <div class="cell-description">Architecture logic and technical integration</div>
+                </div>
+                <div class="matrix-cell">
+                    <div class="cell-title">Strategic Systems</div>
+                    <div class="cell-description">Analysis, positioning, and insight mapping</div>
+                </div>
+                <div class="matrix-cell">
+                    <div class="cell-title">Environment Systems</div>
+                    <div class="cell-description">Worldbuilding and narrative shaping</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Process Sequence Layer -->
+        <div id="process-layer" class="layer inactive">
+            <div class="process-container">
+                <div class="process-line"></div>
+                <div class="process-stage stage-observe active">Observe</div>
+                <div class="process-stage stage-model">Model</div>
+                <div class="process-stage stage-architect">Architect</div>
+                <div class="process-stage stage-construct">Construct</div>
+                <div class="process-stage stage-deploy">Deploy</div>
+                <div class="process-stage stage-maintain">Maintain</div>
+            </div>
+        </div>
+        
+        <!-- Navigation Controls -->
+        <div class="nav-controls">
+            <div class="nav-dot active" data-target="core-layer"></div>
+            <div class="nav-dot" data-target="identity-layer"></div>
+            <div class="nav-dot" data-target="network-layer"></div>
+            <div class="nav-dot" data-target="matrix-layer"></div>
+            <div class="nav-dot" data-target="process-layer"></div>
+        </div>
+        
+        <div class="back-button" id="back-button">← RETURN TO CORE</div>
     </div>
-    
-    <!-- Entry Chamber -->
-    <section id="entry-chamber">
-        <div class="section-content">
-            <h1 class="huge-text">CONSCIOUS SYSTEM</h1>
-            <p class="medium-text">Interface with intelligent architecture</p>
-            
-            <div class="central-core">
-                <div class="core-element">
-                    <div class="node-grid"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Identity Core -->
-    <section id="identity-core">
-        <div class="section-content">
-            <h2 class="large-text">IDENTITY CORE</h2>
-            <p class="medium-text">System parameters and operational framework</p>
-            
-            <div class="identity-statements">
-                <div class="statement-item">
-                    <div class="statement-label">ENTITY DESIGNATION</div>
-                    <div class="statement-value">Conscious Interface System v3.2</div>
-                </div>
-                <div class="statement-item">
-                    <div class="statement-label">OPERATIONAL MODE</div>
-                    <div class="statement-value">Autonomous Intelligence</div>
-                </div>
-                <div class="statement-item">
-                    <div class="statement-label">PRIMARY FUNCTION</div>
-                    <div class="statement-value">Pattern Recognition & Synthesis</div>
-                </div>
-                <div class="statement-item">
-                    <div class="statement-label">SYSTEM STATUS</div>
-                    <div class="statement-value">Fully Operational</div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Capabilities Matrix -->
-    <section id="capabilities-matrix">
-        <div class="section-content">
-            <h2 class="large-text">CAPABILITIES MATRIX</h2>
-            <p class="medium-text">Activate system modules for detailed analysis</p>
-            
-            <div class="capabilities-grid">
-                <div class="capability-item">
-                    <div class="capability-icon">01</div>
-                    <h3>Pattern Recognition</h3>
-                    <p>Advanced algorithmic analysis</p>
-                </div>
-                <div class="capability-item">
-                    <div class="capability-icon">02</div>
-                    <h3>Data Synthesis</h3>
-                    <p>Multi-dimensional information processing</p>
-                </div>
-                <div class="capability-item">
-                    <div class="capability-icon">03</div>
-                    <h3>Predictive Modeling</h3>
-                    <p>Future state projection algorithms</p>
-                </div>
-                <div class="capability-item">
-                    <div class="capability-icon">04</div>
-                    <h3>Adaptive Learning</h3>
-                    <p>Continuous system optimization</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Process Flow -->
-    <section id="process-flow">
-        <div class="section-content">
-            <h2 class="large-text">PROCESS FLOW</h2>
-            <p class="medium-text">Operational sequence visualization</p>
-            
-            <div class="flow-container">
-                <div class="flow-path"></div>
-                <div class="flow-nodes">
-                    <div class="flow-node active"></div>
-                    <div class="flow-node"></div>
-                    <div class="flow-node"></div>
-                    <div class="flow-node"></div>
-                    <div class="flow-node"></div>
-                </div>
-                <div class="flow-labels">
-                    <div class="flow-label active">Input Reception</div>
-                    <div class="flow-label">Data Processing</div>
-                    <div class="flow-label">Pattern Analysis</div>
-                    <div class="flow-label">Synthesis</div>
-                    <div class="flow-label">Output Generation</div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Active Systems -->
-    <section id="active-systems">
-        <div class="section-content">
-            <h2 class="large-text">ACTIVE SYSTEMS</h2>
-            <p class="medium-text">Current operational processes</p>
-            
-            <div class="system-logs">
-                <div class="log-entry">
-                    <span class="log-timestamp">2023-11-05 14:23:01</span>
-                    <span class="log-status">ACTIVE</span>
-                    <span>Neural network optimization cycle #472</span>
-                </div>
-                <div class="log-entry">
-                    <span class="log-timestamp">2023-11-05 14:20:33</span>
-                    <span class="log-status">COMPLETED</span>
-                    <span>Data stream analysis - Pattern recognition module</span>
-                </div>
-                <div class="log-entry">
-                    <span class="log-timestamp">2023-11-05 14:18:12</span>
-                    <span class="log-status">ACTIVE</span>
-                    <span>Predictive modeling for Q4 projections</span>
-                </div>
-                <div class="log-entry">
-                    <span class="log-timestamp">2023-11-05 14:15:47</span>
-                    <span class="log-status">QUEUED</span>
-                    <span>Adaptive learning algorithm update</span>
-                </div>
-                <div class="log-entry">
-                    <span class="log-timestamp">2023-11-05 14:13:29</span>
-                    <span class="log-status">COMPLETED</span>
-                    <span>System integrity check - All modules nominal</span>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Contact Terminal -->
-    <section id="contact-terminal">
-        <div class="section-content">
-            <h2 class="large-text">CONTACT TERMINAL</h2>
-            <p class="medium-text">Initiate direct system communication</p>
-            
-            <div class="terminal-interface">
-                <div class="terminal-prompt">SYSTEM READY FOR INPUT</div>
-                
-                <div class="input-group">
-                    <input type="text" class="input-field" placeholder="IDENTIFICATION">
-                </div>
-                
-                <div class="input-group">
-                    <input type="text" class="input-field" placeholder="MESSAGE CONTENT">
-                </div>
-                
-                <div class="input-group">
-                    <input type="text" class="input-field" placeholder="PRIORITY LEVEL">
-                </div>
-                
-                <button class="submit-button">INITIATE TRANSMISSION</button>
-            </div>
-        </div>
-    </section>
 
     <script>
-        // Create background particles
-        function createParticles() {
-            const container = document.getElementById('particles-container');
-            const particleCount = 50;
+        // Layer management
+        const layers = document.querySelectorAll('.layer');
+        const navDots = document.querySelectorAll('.nav-dot');
+        const backButton = document.getElementById('back-button');
+        const coreInteraction = document.getElementById('core-interaction');
+        
+        // Set initial state
+        let currentLayer = 0;
+        
+        // Navigation dot click handlers
+        navDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                switchLayer(index);
+            });
+        });
+        
+        // Back button handler
+        backButton.addEventListener('click', () => {
+            switchLayer(0);
+        });
+        
+        // Core interaction handler
+        coreInteraction.addEventListener('click', () => {
+            switchLayer(1);
+        });
+        
+        // Scroll-based navigation
+        let scrollTimeout;
+        document.addEventListener('wheel', (e) => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                if (e.deltaY > 0) {
+                    // Scroll down - move forward
+                    if (currentLayer < layers.length - 1) {
+                        switchLayer(currentLayer + 1);
+                    }
+                } else {
+                    // Scroll up - move backward
+                    if (currentLayer > 0) {
+                        switchLayer(currentLayer - 1);
+                    }
+                }
+            }, 150);
+        }, { passive: true });
+        
+        // Layer switching function
+        function switchLayer(index) {
+            // Update layers
+            layers.forEach(layer => layer.classList.remove('active'));
+            layers[index].classList.add('active');
             
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
+            // Update navigation dots
+            navDots.forEach(dot => dot.classList.remove('active'));
+            navDots[index].classList.add('active');
+            
+            // Update current layer index
+            currentLayer = index;
+            
+            // Show/hide back button (not on core layer)
+            if (index === 0) {
+                backButton.style.opacity = '0';
+                backButton.style.pointerEvents = 'none';
+            } else {
+                backButton.style.opacity = '0.7';
+                backButton.style.pointerEvents = 'auto';
+            }
+            
+            // Special animations for specific layers
+            if (index === 2) { // Network layer
+                // Reset and restart animations
+                document.querySelectorAll('.satellite-node').forEach(node => {
+                    node.style.animation = 'none';
+                    setTimeout(() => {
+                        node.style.animation = '';
+                    }, 10);
+                });
+            }
+            
+            if (index === 4) { // Process layer
+                // Reset and restart process animation
+                const stages = document.querySelectorAll('.process-stage');
+                stages.forEach(stage => stage.classList.remove('active'));
                 
-                // Random position
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.top = `${Math.random() * 100}%`;
-                
-                // Random animation delay and duration
-                const delay = Math.random() * 15;
-                const duration = 10 + Math.random() * 10;
-                
-                particle.style.animationDelay = `${delay}s`;
-                particle.style.animationDuration = `${duration}s`;
-                
-                container.appendChild(particle);
+                let stageIndex = 0;
+                const processInterval = setInterval(() => {
+                    if (stageIndex < stages.length) {
+                        stages[stageIndex].classList.add('active');
+                        stageIndex++;
+                    } else {
+                        clearInterval(processInterval);
+                    }
+                }, 300);
             }
         }
         
-        // Central core interaction
-        function setupCoreInteraction() {
-            const core = document.querySelector('.core-element');
-            const particlesContainer = document.getElementById('particles-container');
-            
-            document.addEventListener('mousemove', (e) => {
-                const x = e.clientX / window.innerWidth;
-                const y = e.clientY / window.innerHeight;
+        // Cursor proximity effect on core
+        document.addEventListener('mousemove', (e) => {
+            if (currentLayer === 0) { // Only on core layer
+                const core = document.querySelector('.core');
+                const rect = core.getBoundingClientRect();
+                const coreX = rect.left + rect.width / 2;
+                const coreY = rect.top + rect.height / 2;
                 
-                // Move core slightly based on cursor position
-                core.style.transform = `translate(${(x - 0.5) * 10}px, ${(y - 0.5) * 10}px)`;
+                const mouseX = e.clientX;
+                const mouseY = e.clientY;
                 
-                // Create a particle trail near the core
-                if (Math.random() > 0.7) {
-                    const particle = document.createElement('div');
-                    particle.classList.add('particle');
-                    
-                    const coreRect = core.getBoundingClientRect();
-                    const coreCenterX = coreRect.left + coreRect.width / 2;
-                    const coreCenterY = coreRect.top + coreRect.height / 2;
-                    
-                    particle.style.left = `${coreCenterX + (Math.random() - 0.5) * 50}px`;
-                    particle.style.top = `${coreCenterY + (Math.random() - 0.5) * 50}px`;
-                    
-                    const delay = 0;
-                    const duration = 3 + Math.random() * 5;
-                    
-                    particle.style.animationDelay = `${delay}s`;
-                    particle.style.animationDuration = `${duration}s`;
-                    
-                    particlesContainer.appendChild(particle);
-                    
-                    // Remove particle after animation completes
-                    setTimeout(() => {
-                        particle.remove();
-                    }, duration * 1000);
-                }
-            });
-        }
-        
-        // Capability items interaction
-        function setupCapabilitiesInteraction() {
-            const capabilityItems = document.querySelectorAll('.capability-item');
-            
-            capabilityItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    // Remove active class from all items
-                    capabilityItems.forEach(i => i.classList.remove('active'));
-                    // Add active class to clicked item
-                    this.classList.add('active');
-                    
-                    // In a real implementation, this would expand the panel
-                    // For this demo, we'll just highlight it
-                });
-            });
-        }
-        
-        // Process flow scroll animation
-        function setupProcessFlow() {
-            const flowNodes = document.querySelectorAll('.flow-node');
-            const flowLabels = document.querySelectorAll('.flow-label');
-            const flowSection = document.getElementById('process-flow');
-            
-            // Simple implementation - would be more sophisticated with intersection observer
-            window.addEventListener('scroll', () => {
-                const sectionTop = flowSection.offsetTop;
-                const sectionHeight = flowSection.offsetHeight;
-                const scrollPos = window.scrollY;
+                const distance = Math.sqrt(
+                    Math.pow(mouseX - coreX, 2) + Math.pow(mouseY - coreY, 2)
+                );
                 
-                if (scrollPos > sectionTop - window.innerHeight / 2 && 
-                    scrollPos < sectionTop + sectionHeight - window.innerHeight / 2) {
-                    
-                    const progress = (scrollPos - sectionTop + window.innerHeight / 2) / (sectionHeight - window.innerHeight);
-                    
-                    // Activate nodes based on scroll progress
-                    flowNodes.forEach((node, index) => {
-                        if (progress > index * 0.2) {
-                            node.classList.add('active');
-                            flowLabels[index].classList.add('active');
-                        } else {
-                            node.classList.remove('active');
-                            flowLabels[index].classList.remove('active');
-                        }
-                    });
-                }
-            });
-        }
-        
-        // Initialize everything when the page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            createParticles();
-            setupCoreInteraction();
-            setupCapabilitiesInteraction();
-            setupProcessFlow();
+                const maxDistance = 300;
+                const intensity = Math.max(0, 1 - distance / maxDistance);
+                
+                core.style.transform = `scale(${1 + intensity * 0.2})`;
+                core.style.boxShadow = `0 0 ${60 + intensity * 40}px var(--cyan)`;
+            }
         });
     </script>
 </body>
