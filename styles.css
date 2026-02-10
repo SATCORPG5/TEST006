@@ -12,13 +12,15 @@ body {
     overflow-x: hidden;
     font-weight: 300;
     line-height: 1.6;
+    height: 100vh;
 }
 
 #core-container {
     position: relative;
     height: 100vh;
-    overflow-y: scroll;
+    overflow-y: auto;
     scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
 }
 
 .chamber {
@@ -151,12 +153,14 @@ body {
     letter-spacing: 0.2em;
     text-transform: uppercase;
     min-width: 120px;
+    display: inline-block;
 }
 
 .data-value {
     color: rgba(255, 255, 255, 0.9);
     font-size: 1.1rem;
     letter-spacing: 0.1em;
+    margin-left: 2rem;
 }
 
 /* Capabilities Matrix */
@@ -211,6 +215,8 @@ body {
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(10px);
     transition: right 0.6s ease;
+    padding: 2rem;
+    color: white;
 }
 
 /* Process Flow */
@@ -234,7 +240,13 @@ body {
     letter-spacing: 0.2em;
     text-transform: uppercase;
     transition: all 0.4s ease;
+    cursor: default;
 }
+
+.flow-node[data-step="1"] { left: 0; top: 50%; transform: translateY(-50%); }
+.flow-node[data-step="2"] { left: 30%; top: 20%; }
+.flow-node[data-step="3"] { left: 60%; top: 80%; }
+.flow-node[data-step="4"] { right: 0; top: 50%; transform: translateY(-50%); }
 
 .flow-node.active {
     background: rgba(0, 255, 255, 0.2);
@@ -246,9 +258,6 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
-    stroke: rgba(0, 255, 255, 0.2);
-    stroke-width: 1;
-    fill: none;
 }
 
 /* Active Systems */
@@ -266,6 +275,14 @@ body {
     padding: 1rem;
     background: rgba(255, 255, 255, 0.02);
     border-left: 2px solid rgba(0, 255, 255, 0.3);
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.5s ease;
+}
+
+.log-entry.visible {
+    opacity: 1;
+    transform: translateX(0);
 }
 
 .log-time {
@@ -278,6 +295,7 @@ body {
 .log-message {
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.9rem;
+    margin-left: 1rem;
 }
 
 /* Contact Terminal */
@@ -330,6 +348,7 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     width: 100%;
+    font-family: inherit;
 }
 
 .transmit-button:hover {
@@ -361,5 +380,23 @@ body {
     .core-element {
         width: 200px;
         height: 200px;
+    }
+    
+    .matrix-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .capability-module {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .system-logs {
+        width: 90%;
+    }
+    
+    .terminal-interface {
+        width: 90%;
     }
 }
