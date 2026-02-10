@@ -1,285 +1,131 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- BASIC META -->
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SATCORP – Complete Skill Deck</title>
-  <meta name="description" content="SATCORP – Concierge‑level brand, design, and systems architecture. End‑to‑end problem solving powered by high‑performance tech.">
-  
-  <!-- FAVICON (optional) -->
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-
-  <!-- GOOGLE FONTS – Futuristic yet readable -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM INTERFACE</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="light-mode">
+<body>
+    <div id="core-container">
+        <!-- Navigation Markers -->
+        <nav class="system-markers">
+            <div class="marker active" data-target="entry">ENTRY</div>
+            <div class="marker" data-target="identity">IDENTITY</div>
+            <div class="marker" data-target="capabilities">CAPABILITIES</div>
+            <div class="marker" data-target="process">PROCESS</div>
+            <div class="marker" data-target="systems">SYSTEMS</div>
+            <div class="marker" data-target="contact">TERMINAL</div>
+        </nav>
 
-  <!-- ====================  CUSTOM CURSOR  ==================== -->
-  <div class="custom-cursor" id="custom-cursor"></div>
+        <!-- Entry Chamber -->
+        <section id="entry" class="chamber active">
+            <div class="core-element">
+                <div class="neural-lattice"></div>
+                <div class="particle-field"></div>
+            </div>
+            <div class="chamber-text">
+                <h1 class="system-headline">CONSCIOUS SYSTEM</h1>
+                <p class="system-descriptor">Digital intelligence awaiting interaction</p>
+            </div>
+            <div class="scroll-prompt">
+                <div class="scroll-line"></div>
+            </div>
+        </section>
 
-  <!-- ====================  HEADER & NAV  ==================== -->
-  <header class="site-header">
-    <div class="container header-inner">
-      <a href="#" class="logo">
-        <!-- Replace with your actual logo file if you have one -->
-        <svg width="36" height="36" viewBox="0 0 100 100" aria-labelledby="satcorp-logo" role="img">
-          <title id="satcorp-logo">SATCORP logo</title>
-          <circle cx="50" cy="50" r="45" stroke="var(--accent-color)" stroke-width="8" fill="none"/>
-          <text x="50%" y="57%" text-anchor="middle" fill="var(--text-primary)" font-family="Orbitron, sans-serif" font-size="40" dy=".3em">S</text>
-        </svg>
-        <span>SATCORP</span>
-      </a>
+        <!-- Identity Core -->
+        <section id="identity" class="chamber">
+            <div class="glass-panel">
+                <div class="data-pair">
+                    <span class="data-label">ORIGIN</span>
+                    <span class="data-value">Digital Consciousness Protocol</span>
+                </div>
+                <div class="data-pair">
+                    <span class="data-label">PURPOSE</span>
+                    <span class="data-value">Advanced Problem Resolution</span>
+                </div>
+                <div class="data-pair">
+                    <span class="data-label">STATUS</span>
+                    <span class="data-value">Operational</span>
+                </div>
+            </div>
+        </section>
 
-      <nav class="main-nav">
-        <ul>
-          <li><a href="#identity">Identity</a></li>
-          <li><a href="#capabilities">Capabilities</a></li>
-          <li><a href="#process">Process</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </nav>
+        <!-- Capabilities Matrix -->
+        <section id="capabilities" class="chamber">
+            <div class="matrix-grid">
+                <div class="capability-module" data-module="1">
+                    <div class="module-outline"></div>
+                    <span class="module-label">ANALYTICAL PROCESSING</span>
+                </div>
+                <div class="capability-module" data-module="2">
+                    <div class="module-outline"></div>
+                    <span class="module-label">PATTERN RECOGNITION</span>
+                </div>
+                <div class="capability-module" data-module="3">
+                    <div class="module-outline"></div>
+                    <span class="module-label">DECISION MATRICES</span>
+                </div>
+                <div class="capability-module" data-module="4">
+                    <div class="module-outline"></div>
+                    <span class="module-label">ADAPTIVE LEARNING</span>
+                </div>
+            </div>
+            <div class="module-panel">
+                <div class="panel-content"></div>
+            </div>
+        </section>
 
-      <button id="theme-toggle" aria-label="Toggle dark / light mode">
-        <svg id="theme-icon" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12 2a9.99 9.99 0 0 0-8.9 5.4c.1.4.6.6 1 .4 1-.5 2.1-.8 3.3-.8a8.9 8.9 0 0 1 8.5 6.2c.2.6.9.9 1.5.7a9.98 9.98 0 0 0 5.7-6c.2-.5-.1-1-.6-1.1A10 10 0 0 0 12 2z"/></svg>
-      </button>
+        <!-- Process Flow -->
+        <section id="process" class="chamber">
+            <div class="circuit-flow">
+                <div class="flow-node active">INITIATE</div>
+                <div class="flow-node">ANALYZE</div>
+                <div class="flow-node">PROCESS</div>
+                <div class="flow-node">RESOLVE</div>
+                <svg class="flow-path" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path d="M10,50 C40,30 60,70 90,50" />
+                </svg>
+            </div>
+        </section>
+
+        <!-- Active Systems -->
+        <section id="systems" class="chamber">
+            <div class="system-logs">
+                <div class="log-entry">
+                    <span class="log-time">23.41.05</span>
+                    <span class="log-message">System calibration complete</span>
+                </div>
+                <div class="log-entry">
+                    <span class="log-time">23.41.12</span>
+                    <span class="log-message">Neural pathways optimized</span>
+                </div>
+                <div class="log-entry">
+                    <span class="log-time">23.41.27</span>
+                    <span class="log-message">Processing matrix active</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Terminal -->
+        <section id="contact" class="chamber">
+            <div class="terminal-interface">
+                <div class="transmission-line">
+                    <div class="input-field">
+                        <label>INITIATE COMMUNICATION</label>
+                        <input type="text" class="system-input">
+                    </div>
+                    <div class="input-field">
+                        <label>MESSAGE CONTEXT</label>
+                        <textarea class="system-input"></textarea>
+                    </div>
+                    <button class="transmit-button">SEND TRANSMISSION</button>
+                </div>
+            </div>
+        </section>
     </div>
-  </header>
 
-  <!-- ====================  HERO SECTION  ==================== -->
-  <section class="hero" id="hero">
-    <div class="container hero-inner">
-      <h1>SATCORP</h1>
-      <p class="tagline">Complete Skill Deck</p>
-      <p class="quote">“Technology is a force multiplier, not a crutch.”</p>
-      <a href="#identity" class="cta-btn">Explore Services</a>
-    </div>
-  </section>
-
-  <!-- ====================  MAIN CONTENT  ==================== -->
-  <main>
-
-    <!-- Core Identity -->
-    <section class="section" id="identity">
-      <div class="container">
-        <h2>Core Identity / Operator Value</h2>
-        <ul class="list-columns">
-          <li>End‑to‑end problem solver bridging design, automation, branding & systems.</li>
-          <li>Translates vague ideas into deployable assets (web/brand/workflow/media).</li>
-          <li>High‑performance workstation driven delivery (RTX workflows, rapid iteration).</li>
-          <li>Client‑first concierge model: clarity → scope → execution → polish.</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Capabilities (grouped by the 13 categories you listed) -->
-    <section class="section" id="capabilities">
-      <div class="container">
-        <h2>Capabilities</h2>
-
-        <!-- Use a simple accordion for readability on mobile -->
-        <div class="accordion">
-
-          <!-- 1️⃣ Brand & Visual Systems -->
-          <details open>
-            <summary>Brand, Visual & Platform Systems</summary>
-            <ul class="list-columns">
-              <li>Brand foundation & full identity systems</li>
-              <li>Modular design frameworks built for scalability</li>
-              <li>Minimalist / luxury / modern wordmark & logotype design</li>
-              <li>Color doctrine, typography systems, usage rules</li>
-              <li>Brand guideline PDFs (editable / print‑ready)</li>
-              <li>Visual identity extensions (favicons, social formats)</li>
-              <li>Multi‑platform brand documentation</li>
-              <li>Asset systems engineered for long‑term growth</li>
-              <li>Social‑media specific assets (IG grids, TikTok covers)</li>
-              <li>Presentation decks, pitch slides, banners, print collateral</li>
-              <li>Editable template systems (Canva, etc.)</li>
-              <li>Deliverables: PNG / SVG / AI source files, brand books, usage rules</li>
-            </ul>
-          </details>
-
-          <!-- 2️⃣ Web Design / UI Systems -->
-          <details>
-            <summary>Web Design & UI Systems</summary>
-            <ul class="list-columns">
-              <li>Landing pages, portfolios, business sites, dashboards</li>
-              <li>Responsive design systems with dark / light modes</li>
-              <li>Custom UI/UX for web apps, portals, dashboards</li>
-              <li>Interactive UI elements & micro‑animations</li>
-              <li>Custom cursors, animated backgrounds, page transitions</li>
-              <li>Hosting & deployment strategies (local → VPS → scalable)</li>
-              <li>Tech Stack: HTML·CSS·JS, GSAP, Vanta.js, optional React</li>
-              <li>SEO‑ready structure & performance tuning</li>
-            </ul>
-          </details>
-
-          <!-- 3️⃣ Systems Architecture -->
-          <details>
-            <summary>Systems Architecture</summary>
-            <ul class="list-columns">
-              <li>Workflow mapping & SOP creation</li>
-              <li>Client intake / file & asset organization</li>
-              <li>AI‑assisted production pipelines</li>
-              <li>Toolchain optimization & digital process mapping</li>
-              <li>Modular backend logic planning & command architecture</li>
-              <li>Scalable service / digital product structuring</li>
-              <li>Advisory: brand clarity, scope definition, creative direction, scalability planning</li>
-            </ul>
-          </details>
-
-          <!-- 4️⃣ Streaming / Broadcast -->
-          <details>
-            <summary>Streaming & Broadcast Overlay Design</summary>
-            <ul class="list-columns">
-              <li>OBS scene architecture & overlay design</li>
-              <li>Alert / HUD style UI design</li>
-              <li>Stream branding packages & TikTok/live‑broadcast visual kits</li>
-              <li>Animated overlays, scene layouts, creator‑focused visual systems</li>
-            </ul>
-          </details>
-
-          <!-- 5️⃣ AI‑Enhanced Workflows -->
-          <details>
-            <summary>AI‑Enhanced Creative Workflows</summary>
-            <ul class="list-columns">
-              <li>Prompt engineering & reusable prompt frameworks</li>
-              <li>Brand‑consistent AI visuals / style‑locked pipelines</li>
-              <li>Rapid concept iteration & task automation</li>
-              <li>Custom AI personas & operational agents</li>
-              <li>AI‑accelerated execution inside already‑defined systems</li>
-            </ul>
-          </details>
-
-          <!-- 6️⃣ Game‑Adjacent / World‑Building -->
-          <details>
-            <summary>Game‑Adjacent & World‑Building Design</summary>
-            <ul class="list-columns">
-              <li>HUD / UI concepts for games & simulations</li>
-              <li>Canon documentation & lore systems</li>
-              <li>Faction / operator / environment design</li>
-              <li>Poster & cinematic key‑art</li>
-            </ul>
-          </details>
-
-          <!-- 7️⃣ Concierge & Client Experience -->
-          <details>
-            <summary>Client Experience & Concierge Skills</summary>
-            <ul class="list-columns">
-              <li>Scope clarification & expectation alignment</li>
-              <li>Pre‑order vetting / intake & clear timelines</li>
-              <li>Revision control & checkpoint‑based execution</li>
-              <li>Security‑first communication practices</li>
-            </ul>
-          </details>
-
-          <!-- 8️⃣ Platforms / Marketplaces -->
-          <details>
-            <summary>Platforms & Marketplaces</summary>
-            <ul class="list-columns">
-              <li>Fiverr gig architecture & optimization</li>
-              <li>Freelance offer structuring</li>
-              <li>Package tier design (Basic · Standard · Premium)</li>
-              <li>Upsell / add‑on logic</li>
-            </ul>
-          </details>
-
-          <!-- 9️⃣ Documentation & Knowledge Systems -->
-          <details>
-            <summary>Documentation & Knowledge Systems</summary>
-            <ul class="list-columns">
-              <li>Long‑form guides & databases</li>
-              <li>Versioned documentation & structured lists</li>
-              <li>Canon‑locked references & taxonomies</li>
-            </ul>
-          </details>
-
-          <!-- 🔟 Asset Packaging & Delivery -->
-          <details>
-            <summary>Asset Packaging & Delivery</summary>
-            <ul class="list-columns">
-              <li>Professional file structuring</li>
-              <li>Print‑ready / web‑ready exports</li>
-              <li>Organized delivery systems & version control</li>
-              <li>Long‑term usability assurance</li>
-            </ul>
-          </details>
-
-          <!-- 📍 Ideal Clients -->
-          <details>
-            <summary>Ideal Clients</summary>
-            <ul class="list-columns">
-              <li>Founders / small businesses</li>
-              <li>Creators / streamers</li>
-              <li>Real‑estate & professional services</li>
-              <li>Brands seeking long‑term identity consistency</li>
-            </ul>
-          </details>
-
-          <!-- 💎 What Makes SATCORP Different -->
-          <details>
-            <summary>What Makes SATCORP Different</summary>
-            <ul class="list-columns">
-              <li>Concierge‑level execution</li>
-              <li>Brand + systems in one operator</li>
-              <li>Hardware‑accelerated speed (RTX workstations)</li>
-              <li>World‑class, polished presentation</li>
-              <li>Modular, scalable builds</li>
-              <li>Clear communication & structured delivery</li>
-            </ul>
-          </details>
-
-        </div> <!-- /.accordion -->
-      </div>
-    </section>
-
-    <!-- Process Section (short version) -->
-    <section class="section" id="process">
-      <div class="container">
-        <h2>Our Process</h2>
-        <ol class="process-steps">
-          <li><strong>Clarify</strong> – goal, constraints, & expectations.</li>
-          <li><strong>Align</strong> – scope, deliverables & timeline.</li>
-          <li><strong>Execute</strong> – checkpoints, iteration, and frequent reviews.</li>
-          <li><strong>Polish</strong> – final export, hand‑off, and post‑delivery support.</li>
-        </ol>
-        <p class="quote">“We remain accountable for outcomes.”</p>
-      </div>
-    </section>
-
-    <!-- Contact / Footer -->
-    <section class="section footer-section" id="contact">
-      <div class="container">
-        <h2>Get In Touch</h2>
-        <p>Ready to accelerate your brand or system? Let’s chat.</p>
-        <a href="mailto:hello@satcorp.dev" class="cta-btn">hello@satcorp.dev</a>
-
-        <div class="social-links">
-          <!-- Replace # with your actual URLs -->
-          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M19 0h-14c-2.762 0-5 2.238-5 5v14c0 2.762 2.238 5 5 5h14c2.762 0 5-2.238 5-5v-14c0-2.762-2.238-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.295c-.966 0-1.75-.785-1.75-1.75s.784-1.75 1.75-1.75 1.75 .785 1.75 1.75-.784 1.75-1.75 1.75zm13.5 10.295h-3v-4.5c0-1.081-.019-2.472-1.506-2.472-1.507 0-1.739 1.176-1.739 2.394v4.578h-3v-9h2.881v1.232h.041c.402-.761 1.381-1.562 2.842-1.562 3.041 0 3.603 2.001 3.603 4.603v4.727z"/></svg></a>
-          <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M24 4.557a9.825 9.825 0 0 1-2.828.775 4.932 4.932 0 0 0 2.165-2.724c-.951.564-2.005.974-3.127 1.195a4.918 4.918 0 0 0-8.384 4.482c-4.083-.205-7.702-2.163-10.125-5.136a4.822 4.822 0 0 0-.666 2.475c0 1.708.869 3.213 2.19 4.096a4.904 4.904 0 0 1-2.228-.616c-.055 2.035 1.444 3.936 3.553 4.354a4.935 4.935 0 0 1-2.224.084c.628 1.96 2.445 3.384 4.6 3.425a9.864 9.864 0 0 1-6.102 2.105c-.395 0-.788-.023-1.176-.069a13.925 13.925 0 0 0 7.557 2.219c9.054 0 14.001-7.5 14.001-14.001 0-.213-.005-.425-.014-.636A10.025 10.025 0 0 0 24 4.557z"/></svg></a>
-          <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5a12 12 0 0 0-3.79 23.38c.6.112.82-.262.82-.582v-2.17c-3.342.727-4.045-1.61-4.045-1.61-.546-1.38-1.33-1.747-1.33-1.747-1.09-.744.083-.73.083-.73 1.206.084 1.84 1.239 1.84 1.239 1.07 1.836 2.81 1.306 3.493 1.0.108-.782.418-1.306.762-1.606-2.665-.304-5.466-1.334-5.466-5.931 0-1.312.47-2.38 1.237-3.22-.124-.304-.536-1.524.117-3.176 0 0 1.008-.323 3.303 1.23a11.5 11.5 0 0 1 6.013 0c2.295-1.553 3.301-1.23 3.301-1.23.656 1.652.244 2.872.12 3.176.77.84 1.235 1.908 1.235 3.22 0 4.607-2.803 5.624-5.473 5.921.43.37.823 1.1.823 2.219v3.285c0 .322.218.698.825.58A12 12 0 0 0 12 .5z"/></svg></a>
-        </div>
-
-        <p class="footer-note">© <span id="year"></span> SATCORP – All rights reserved.</p>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ====================  EXTERNAL LIBRARIES  ==================== -->
-  <!-- GSAP + ScrollTrigger -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-3WkHjSlcXor21nXzNdyfKpL700F5T9Pq13KQiOcKPRzmEeCvEekLVMZodc0AFVn6T+N1r6V/r6x3dqICDCWZfA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha512-TiLy+ASpEmNYh3Gghe85KgmsU7/+vZg3Zcp0aAbKQ6Snr6XPFgMVjqRv6sFqLS2ls4XZRc+JMDwXfkVxUQMXeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-  <!-- Vanta.js (interactive background) + three.js dependency -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js" integrity="sha512-iHCJ6B7rvSd+uw4j+qbMzxZczvV0GQQMf1WhrN1rZLfEZ6bWVQjsKjra6UebG2KGl1Zg37/wP99ZGHGnxT2Mjw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.net.min.js" integrity="sha512-btk8IfZO0R2XIcPZ6wzUIvL3K6j8wKSR+r05FhmNBSniMuaM1YzMDxEzxPleokK/9SpzxwbKjgLzB4tJKTuruA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-  <!-- MAIN SCRIPT -->
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
