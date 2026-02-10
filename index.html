@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SYSTEM INTERFACE</title>
+    <title>CONSCIOUS SYSTEM</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap">
     <style>
         * {
@@ -41,25 +41,40 @@
 
         .custom-cursor {
             position: fixed;
-            width: 20px;
-            height: 20px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
-            background: var(--accent-main);
-            mix-blend-mode: difference;
+            background: radial-gradient(circle, var(--accent-main) 0%, transparent 70%);
+            mix-blend-mode: screen;
             pointer-events: none;
             z-index: 9999;
-            transition: transform 0.1s;
+            transition: transform 0.1s, width 0.3s, height 0.3s;
+            filter: drop-shadow(0 0 10px var(--accent-main));
         }
 
         .cursor-trail {
             position: fixed;
-            width: 6px;
-            height: 6px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             background: var(--accent-secondary);
             pointer-events: none;
             z-index: 9998;
             opacity: 0;
+            transition: transform 0.3s;
+        }
+
+        .cursor-halo {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-main);
+            pointer-events: none;
+            z-index: 9997;
+            opacity: 0;
+            transition: opacity 0.3s;
+            filter: blur(1px);
         }
 
         #core-container {
@@ -359,45 +374,93 @@
             border-left: 1px solid var(--panel-border);
         }
 
-        /* Process Flow */
+        /* Process Flow - Redesigned */
         #process {
             background: linear-gradient(45deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+            flex-direction: column;
         }
 
-        .circuit-flow {
+        .process-container {
+            width: 90%;
+            height: 60%;
             position: relative;
-            width: 80%;
-            height: 200px;
         }
 
-        .flow-node {
+        .process-node {
             position: absolute;
-            padding: 1rem 2rem;
-            background: rgba(0, 255, 255, 0.1);
-            border: 1px solid var(--panel-border);
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(0, 255, 255, 0.05);
+            border: 2px solid var(--panel-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
             transition: all var(--transition-med);
-            cursor: default;
+            cursor: pointer;
+            z-index: 10;
         }
 
-        .flow-node[data-step="1"] { left: 0; top: 50%; transform: translateY(-50%); }
-        .flow-node[data-step="2"] { left: 30%; top: 20%; }
-        .flow-node[data-step="3"] { left: 60%; top: 80%; }
-        .flow-node[data-step="4"] { right: 0; top: 50%; transform: translateY(-50%); }
+        .process-node.active {
+            background: rgba(0, 255, 255, 0.15);
+            border-color: var(--accent-main);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
 
-        .flow-node.active {
-            background: rgba(0, 255, 255, 0.2);
+        .process-node-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
             color: var(--accent-main);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
         }
 
-        .flow-path {
+        .process-node-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .process-connection {
             position: absolute;
-            width: 100%;
-            height: 100%;
+            height: 2px;
+            background: linear-gradient(to right, var(--panel-border), var(--accent-main), var(--panel-border));
+            z-index: 5;
+        }
+
+        .process-connector {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--accent-main);
+            z-index: 6;
+            animation: connectorPulse 3s infinite;
+        }
+
+        .process-description {
+            position: absolute;
+            bottom: 10%;
+            width: 80%;
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--panel-border);
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity var(--transition-med);
+            backdrop-filter: blur(10px);
+        }
+
+        .process-description.active {
+            opacity: 1;
+        }
+
+        @keyframes connectorPulse {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
 
         /* Active Systems */
@@ -577,11 +640,17 @@
             .terminal-interface {
                 width: 90%;
             }
+            
+            .process-node {
+                width: 90px;
+                height: 90px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="custom-cursor"></div>
+    <div class="cursor-halo"></div>
     <div id="core-container">
         <!-- Navigation Markers -->
         <nav class="system-markers">
@@ -657,16 +726,46 @@
             </div>
         </section>
 
-        <!-- Process Flow -->
+        <!-- Process Flow - Redesigned -->
         <section id="process" class="chamber">
-            <div class="circuit-flow">
-                <div class="flow-node" data-step="1">INITIATE</div>
-                <div class="flow-node" data-step="2">ANALYZE</div>
-                <div class="flow-node" data-step="3">PROCESS</div>
-                <div class="flow-node" data-step="4">RESOLVE</div>
-                <svg class="flow-path" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <path d="M10,50 C40,30 60,70 90,50" stroke="rgba(0,255,255,0.2)" stroke-width="1" fill="none"/>
-                </svg>
+            <div class="process-container">
+                <div class="process-node" style="left: 10%; top: 30%;" data-step="1">
+                    <div class="process-node-icon">⟳</div>
+                    <div class="process-node-label">INITIATE</div>
+                </div>
+                <div class="process-node" style="left: 30%; top: 60%;" data-step="2">
+                    <div class="process-node-icon">🔍</div>
+                    <div class="process-node-label">ANALYZE</div>
+                </div>
+                <div class="process-node" style="left: 50%; top: 30%;" data-step="3">
+                    <div class="process-node-icon">⚙️</div>
+                    <div class="process-node-label">PROCESS</div>
+                </div>
+                <div class="process-node" style="left: 70%; top: 60%;" data-step="4">
+                    <div class="process-node-icon">✓</div>
+                    <div class="process-node-label">RESOLVE</div>
+                </div>
+                <div class="process-node" style="left: 90%; top: 30%;" data-step="5">
+                    <div class="process-node-icon">⟲</div>
+                    <div class="process-node-label">ITERATE</div>
+                </div>
+                
+                <!-- Connections -->
+                <div class="process-connection" style="left: 10%; top: 45%; width: 20%;"></div>
+                <div class="process-connection" style="left: 30%; top: 75%; width: 20%;"></div>
+                <div class="process-connection" style="left: 50%; top: 45%; width: 20%;"></div>
+                <div class="process-connection" style="left: 70%; top: 75%; width: 20%;"></div>
+                
+                <!-- Connector dots -->
+                <div class="process-connector" style="left: 15%; top: 43%;"></div>
+                <div class="process-connector" style="left: 35%; top: 73%;"></div>
+                <div class="process-connector" style="left: 55%; top: 43%;"></div>
+                <div class="process-connector" style="left: 75%; top: 73%;"></div>
+                
+                <!-- Process Description -->
+                <div class="process-description">
+                    <p>Select a process node to learn more about this step</p>
+                </div>
             </div>
         </section>
 
@@ -723,6 +822,14 @@
                 this.isAnimating = false;
                 this.particles = [];
                 this.trails = [];
+                this.activeProcessNode = null;
+                this.processDescriptions = {
+                    1: "Initialization phase where the system boots up and prepares for analysis, loading necessary modules and establishing baseline parameters.",
+                    2: "Deep analysis of input data using multi-dimensional pattern recognition algorithms to identify key insights and relationships.",
+                    3: "Processing phase where analytical insights are transformed into actionable intelligence through complex algorithmic transformations.",
+                    4: "Resolution stage where processed data is evaluated against solution criteria to determine optimal outcomes and resolutions.",
+                    5: "Iterative learning phase where results are fed back into the system to refine and improve future processing cycles."
+                };
                 this.init();
             }
 
@@ -732,6 +839,7 @@
                 this.setupMarkerNavigation();
                 this.setupCoreInteractions();
                 this.setupModuleInteractions();
+                this.setupProcessInteractions();
                 this.setupTerminal();
                 this.createParticleSystem();
                 this.animateEntryChamber();
@@ -744,10 +852,13 @@
 
             setupCustomCursor() {
                 const cursor = document.querySelector('.custom-cursor');
+                const halo = document.querySelector('.cursor-halo');
                 
                 document.addEventListener('mousemove', (e) => {
-                    cursor.style.left = e.clientX - 10 + 'px';
-                    cursor.style.top = e.clientY - 10 + 'px';
+                    cursor.style.left = e.clientX - 15 + 'px';
+                    cursor.style.top = e.clientY - 15 + 'px';
+                    halo.style.left = e.clientX - 30 + 'px';
+                    halo.style.top = e.clientY - 30 + 'px';
                     
                     // Create cursor trail
                     this.createCursorTrail(e.clientX, e.clientY);
@@ -755,33 +866,105 @@
                 
                 document.addEventListener('mousedown', () => {
                     cursor.style.transform = 'scale(0.7)';
+                    cursor.style.width = '20px';
+                    cursor.style.height = '20px';
+                    halo.style.opacity = '0.7';
                 });
                 
                 document.addEventListener('mouseup', () => {
                     cursor.style.transform = 'scale(1)';
+                    cursor.style.width = '30px';
+                    cursor.style.height = '30px';
+                    halo.style.opacity = '0';
+                });
+                
+                // Hover effects on interactive elements
+                const interactiveElements = document.querySelectorAll('button, .capability-module, .process-node, .marker');
+                interactiveElements.forEach(el => {
+                    el.addEventListener('mouseenter', () => {
+                        cursor.style.width = '40px';
+                        cursor.style.height = '40px';
+                        cursor.style.background = 'radial-gradient(circle, var(--accent-secondary) 0%, transparent 70%)';
+                        halo.style.opacity = '0.5';
+                    });
+                    
+                    el.addEventListener('mouseleave', () => {
+                        cursor.style.width = '30px';
+                        cursor.style.height = '30px';
+                        cursor.style.background = 'radial-gradient(circle, var(--accent-main) 0%, transparent 70%)';
+                        halo.style.opacity = '0';
+                    });
                 });
             }
 
             createCursorTrail(x, y) {
-                const trail = document.createElement('div');
-                trail.classList.add('cursor-trail');
-                trail.style.left = x - 3 + 'px';
-                trail.style.top = y - 3 + 'px';
-                document.body.appendChild(trail);
-                
-                // Animate trail
-                setTimeout(() => {
-                    trail.style.opacity = '0.7';
-                    trail.style.transform = 'scale(1.5)';
-                }, 10);
-                
-                setTimeout(() => {
-                    trail.style.opacity = '0';
-                    trail.style.transform = 'scale(2)';
+                // Create fewer but more substantial trails
+                if (Math.random() > 0.7) {
+                    const trail = document.createElement('div');
+                    trail.classList.add('cursor-trail');
+                    trail.style.left = x - 6 + 'px';
+                    trail.style.top = y - 6 + 'px';
+                    trail.style.background = `radial-gradient(circle, var(--accent-secondary) 0%, transparent 70%)`;
+                    document.body.appendChild(trail);
+                    
+                    // Animate trail with more dynamic effects
                     setTimeout(() => {
-                        document.body.removeChild(trail);
-                    }, 300);
-                }, 500);
+                        trail.style.opacity = '0.8';
+                        trail.style.transform = 'scale(1.5)';
+                    }, 10);
+                    
+                    setTimeout(() => {
+                        trail.style.opacity = '0';
+                        trail.style.transform = 'scale(2.5)';
+                        setTimeout(() => {
+                            if (trail.parentNode) {
+                                document.body.removeChild(trail);
+                            }
+                        }, 300);
+                    }, 600);
+                }
+            }
+
+            setupProcessInteractions() {
+                const processNodes = document.querySelectorAll('.process-node');
+                const processDescription = document.querySelector('.process-description');
+                
+                processNodes.forEach(node => {
+                    node.addEventListener('click', () => {
+                        const step = node.getAttribute('data-step');
+                        this.activateProcessNode(node, step);
+                    });
+                    
+                    node.addEventListener('mouseenter', () => {
+                        node.style.transform = 'scale(1.15)';
+                        node.style.boxShadow = '0 0 20px rgba(0, 255, 255, 0.3)';
+                    });
+                    
+                    node.addEventListener('mouseleave', () => {
+                        if (!node.classList.contains('active')) {
+                            node.style.transform = 'scale(1)';
+                            node.style.boxShadow = 'none';
+                        }
+                    });
+                });
+            }
+
+            activateProcessNode(node, step) {
+                // Deactivate currently active node
+                if (this.activeProcessNode) {
+                    this.activeProcessNode.classList.remove('active');
+                    this.activeProcessNode.style.transform = 'scale(1)';
+                    this.activeProcessNode.style.boxShadow = 'none';
+                }
+                
+                // Activate new node
+                node.classList.add('active');
+                this.activeProcessNode = node;
+                
+                // Update description
+                const description = document.querySelector('.process-description');
+                description.textContent = this.processDescriptions[step];
+                description.classList.add('active');
             }
 
             setupScrollNavigation() {
@@ -954,7 +1137,7 @@
                         this.animateMatrixGrid();
                         break;
                     case 3: // Process Flow
-                        this.animateFlowNodes();
+                        this.animateProcessNodes();
                         break;
                     case 4: // Active Systems
                         this.animateSystemLogs();
@@ -999,29 +1182,30 @@
                 });
             }
 
-            animateFlowNodes() {
-                const nodes = document.querySelectorAll('#process .flow-node');
+            animateProcessNodes() {
+                const nodes = document.querySelectorAll('#process .process-node');
                 nodes.forEach((node, i) => {
                     node.style.opacity = '0';
+                    node.style.transform = 'scale(0.5)';
                     
                     setTimeout(() => {
                         node.style.transition = 'all 0.5s ease';
                         node.style.opacity = '1';
-                    }, i * 300);
+                        node.style.transform = 'scale(1)';
+                    }, i * 200);
                 });
                 
-                // Animate sequence
-                let step = 0;
-                const interval = setInterval(() => {
-                    nodes.forEach(node => node.classList.remove('active'));
-                    if (nodes[step]) {
-                        nodes[step].classList.add('active');
-                        step = (step + 1) % nodes.length;
-                    }
-                }, 1500);
+                // Reset active node when entering the section
+                if (this.activeProcessNode) {
+                    this.activeProcessNode.classList.remove('active');
+                    this.activeProcessNode.style.transform = 'scale(1)';
+                    this.activeProcessNode = null;
+                }
                 
-                // Store interval ID to clear later if needed
-                this.flowInterval = interval;
+                // Reset description
+                const description = document.querySelector('.process-description');
+                description.textContent = 'Select a process node to learn more about this step';
+                description.classList.remove('active');
             }
 
             animateSystemLogs() {
